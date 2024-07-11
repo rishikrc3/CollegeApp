@@ -9,10 +9,26 @@ namespace CollegeApp.Controllers
 	{
 		[HttpGet]
 		[Route("/name")]
-		public string StudentName()
+		public IEnumerable<Student> StudentName()
 		{
-			return "Rishik";
-		}
+            return new List<Student>
+            {
+                new Student
+                {
+                    Id = 1,
+                    StudentName = "Rishik",
+                    Email = "rishikr3@gmail.com",
+                    Address = "Kalyanpur"
+                },
+                new Student
+                {
+                    Id = 2,
+                    StudentName = "Disha",
+                    Email = "bidisha2125@gmail.com",
+                    Address = "Garia"
+                }
+            };
+        }
 	}
 }
 
