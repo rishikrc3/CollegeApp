@@ -8,7 +8,7 @@ namespace CollegeApp.Controllers
              new Student
                 {
                     Id = 1,
-                    StudentName = "RishikC",
+                    StudentName = "Rishik",
                     Email = "rishikr3@gmail.com",
                     Address = "Kalyanpur"
                 },
