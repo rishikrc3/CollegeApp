@@ -18,6 +18,13 @@ namespace CollegeApp.Controllers
                     StudentName = "Disha",
                     Email = "bidisha2125@gmail.com",
                     Address = "Garia"
+                },
+             new Student
+                {
+                    Id = 3,
+                    StudentName = "Lojens",
+                    Email = "Lojjulal@gmail.com",
+                    Address = "Kalyanpur"
                 }
         };
 		
