@@ -10,6 +10,7 @@ namespace CollegeApp.Controllers
     {
         [HttpGet]
         [Route("All" ,Name ="GetAllStudents")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<Student>>StudentName()
         {
             return Ok(CollegeRepository.Students);
@@ -17,6 +18,10 @@ namespace CollegeApp.Controllers
 
         [HttpGet]
         [Route("{id:int}", Name ="GetStudentsById")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<Student> GetStudentById(int id)
         {
             if (id <= 0)
@@ -31,6 +36,10 @@ namespace CollegeApp.Controllers
 
         [HttpGet]
         [Route("{name:alpha}", Name ="GetStudentByName")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult< Student> GetStudentByName(string name)
         {
             if (string.IsNullOrEmpty(name))
@@ -43,6 +52,10 @@ namespace CollegeApp.Controllers
         }
         [HttpDelete]
         [Route("{id:int}" , Name ="DeleteStudentById")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<bool> DeleteStudent(int id)
         {
             if (id <= 0)
@@ -50,7 +63,7 @@ namespace CollegeApp.Controllers
 
             var studentToBeDeleted = CollegeRepository.Students.Where(n => n.Id == id).FirstOrDefault();
             if (studentToBeDeleted == null)
-                return BadRequest($"The student with the id {id} does not exist");
+                return BadRequest($"The student with the id {id} does not exist with us");
             CollegeRepository.Students.Remove(studentToBeDeleted);
             return Ok(true);
         }
