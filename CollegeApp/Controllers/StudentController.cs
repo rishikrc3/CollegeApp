@@ -8,13 +8,29 @@ namespace CollegeApp.Controllers
     [ApiController]
     public class StudentController : ControllerBase
     {
+
+
         [HttpGet]
         [Route("All" ,Name ="GetAllStudents")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<Student>>StudentName()
+        public ActionResult<IEnumerable<StudentDTO>>StudentName()
         {
-            return Ok(CollegeRepository.Students);
+            var students = new List<StudentDTO>();
+            foreach (var item in CollegeRepository.Students)
+            {
+                StudentDTO obj = new StudentDTO()
+                {
+                    Id = item.Id,
+                    StudentName = item.StudentName,
+                    Email = item.Email,
+                    Address = item.Address
+                };
+                students.Add(obj);
+            }
+            return Ok(students);
         }
+
+
 
         [HttpGet]
         [Route("{id:int}", Name ="GetStudentsById")]
@@ -22,7 +38,7 @@ namespace CollegeApp.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<Student> GetStudentById(int id)
+        public ActionResult<StudentDTO> GetStudentById(int id)
         {
             if (id <= 0)
                 return BadRequest();
@@ -31,24 +47,41 @@ namespace CollegeApp.Controllers
             if (student == null)
                 return NotFound($"The student with id {id} is not found");
 
-            return Ok(student);
+            var studentDTO = new StudentDTO
+            {
+                Id = student.Id,
+                StudentName = student.StudentName,
+                Email = student.Email,
+                Address = student.Address
+
+            };
+
+            return Ok(studentDTO);
         }
 
+
         [HttpGet]
-        [Route("{name:alpha}", Name ="GetStudentByName")]
+        [Route("{name}", Name ="GetStudentByName")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult< Student> GetStudentByName(string name)
+        public ActionResult< StudentDTO> GetStudentByName(string name)
         {
             if (string.IsNullOrEmpty(name))
                 return BadRequest();
             var student =  CollegeRepository.Students.Where(n => n.StudentName == name).FirstOrDefault();
             if (student == null)
                 return NotFound($"The student with the name {name} is not found");
+            var studentDTO = new StudentDTO
+            {
+                Id = student.Id,
+                StudentName = student.StudentName,
+                Email = student.Email,
+                Address = student.Address
+            };
 
-            return Ok(student);
+            return Ok(studentDTO);
         }
         [HttpDelete]
         [Route("{id:int}" , Name ="DeleteStudentById")]
