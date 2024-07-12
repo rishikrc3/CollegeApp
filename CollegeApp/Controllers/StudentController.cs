@@ -11,9 +11,9 @@ namespace CollegeApp.Controllers
 
 
         [HttpGet]
-        [Route("All" ,Name ="GetAllStudents")]
+        [Route("All", Name = "GetAllStudents")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<StudentDTO>>StudentName()
+        public ActionResult<IEnumerable<StudentDTO>> StudentName()
         {
             var students = new List<StudentDTO>();
             foreach (var item in CollegeRepository.Students)
@@ -33,7 +33,7 @@ namespace CollegeApp.Controllers
 
 
         [HttpGet]
-        [Route("{id:int}", Name ="GetStudentsById")]
+        [Route("{id:int}", Name = "GetStudentsById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -61,16 +61,16 @@ namespace CollegeApp.Controllers
 
 
         [HttpGet]
-        [Route("{name}", Name ="GetStudentByName")]
+        [Route("{name}", Name = "GetStudentByName")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult< StudentDTO> GetStudentByName(string name)
+        public ActionResult<StudentDTO> GetStudentByName(string name)
         {
             if (string.IsNullOrEmpty(name))
                 return BadRequest();
-            var student =  CollegeRepository.Students.Where(n => n.StudentName == name).FirstOrDefault();
+            var student = CollegeRepository.Students.Where(n => n.StudentName == name).FirstOrDefault();
             if (student == null)
                 return NotFound($"The student with the name {name} is not found");
             var studentDTO = new StudentDTO
@@ -107,27 +107,49 @@ namespace CollegeApp.Controllers
 
             model.Id = studentobj.Id;
             return CreatedAtRoute("GetStudentsById", new { id = model.Id }, model);
-            
+
+
+
         }
-
-
-        [HttpDelete]
-        [Route("{id:int}" , Name ="DeleteStudentById")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpPut]
+        [Route("update",Name ="Update Student")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<bool> DeleteStudent(int id)
+        public ActionResult<StudentDTO> UpdateStudent([FromBody] StudentDTO model)
         {
-            if (id <= 0)
+            if (model == null || model.Id <= 0)
                 return BadRequest();
 
-            var studentToBeDeleted = CollegeRepository.Students.Where(n => n.Id == id).FirstOrDefault();
-            if (studentToBeDeleted == null)
-                return BadRequest($"The student with the id {id} does not exist with us");
-            CollegeRepository.Students.Remove(studentToBeDeleted);
-            return Ok(true);
+            var existingStudent = CollegeRepository.Students.Where(s => s.Id == model.Id).FirstOrDefault();
+
+            if (existingStudent == null)
+                return NotFound();
+            existingStudent.StudentName = model.StudentName;
+            existingStudent.Email = model.Email;
+            existingStudent.Address = model.Address;
+
+            return NoContent();
+        }
+
+        [HttpDelete]
+            [Route("{id:int}", Name = "DeleteStudentById")]
+            [ProducesResponseType(StatusCodes.Status200OK)]
+            [ProducesResponseType(StatusCodes.Status400BadRequest)]
+            [ProducesResponseType(StatusCodes.Status404NotFound)]
+            [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+            public ActionResult<bool> DeleteStudent(int id)
+            {
+                if (id <= 0)
+                    return BadRequest();
+
+                var studentToBeDeleted = CollegeRepository.Students.Where(n => n.Id == id).FirstOrDefault();
+                if (studentToBeDeleted == null)
+                    return BadRequest($"The student with the id {id} does not exist with us");
+                CollegeRepository.Students.Remove(studentToBeDeleted);
+                return Ok(true);
+            }
         }
     }
-}
+
 

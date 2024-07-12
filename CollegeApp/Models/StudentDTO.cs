@@ -5,15 +5,16 @@ namespace CollegeApp.Controllers
 {
 	public class StudentDTO
 	{
+
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="Student name is required")]
         public string StudentName { get; set;}
 
-        [EmailAddress]
+        [EmailAddress(ErrorMessage ="Please enter valid email address")]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="Student address is required")]
         public string Address { get; set; }
 
     }
