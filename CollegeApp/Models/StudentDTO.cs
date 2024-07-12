@@ -1,11 +1,19 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+
 namespace CollegeApp.Controllers
 {
 	public class StudentDTO
 	{
         public int Id { get; set; }
-        public string StudentName { get; set; }
+
+        [Required]
+        public string StudentName { get; set;}
+
+        [EmailAddress]
         public string Email { get; set; }
+
+        [Required]
         public string Address { get; set; }
 
     }
