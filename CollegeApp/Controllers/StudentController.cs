@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -131,6 +132,46 @@ namespace CollegeApp.Controllers
 
             return NoContent();
         }
+
+        [HttpPatch]
+        [Route("{id:int}", Name = "Update Student Partial")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<StudentDTO> UpdateStudentPartial(int id, [FromBody] JsonPatchDocument<StudentDTO> patchDocument)
+        {
+            if (patchDocument == null || id <= 0)
+                return BadRequest();
+
+            var existingStudent = CollegeRepository.Students.Where(s => s.Id == id).FirstOrDefault();
+
+            if (existingStudent == null)
+                return NotFound();
+
+            var newStudentDTO = new StudentDTO
+            {
+                Id = existingStudent.Id,
+                StudentName = existingStudent.StudentName,
+                Email = existingStudent.Email,
+                Address = existingStudent.Address
+            };
+
+            patchDocument.ApplyTo(newStudentDTO, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            existingStudent.StudentName = newStudentDTO.StudentName;
+            existingStudent.Email = newStudentDTO.Email;
+            existingStudent.Address = newStudentDTO.Address;
+
+            return NoContent();
+        }
+
+
+
+
 
         [HttpDelete]
             [Route("{id:int}", Name = "DeleteStudentById")]
